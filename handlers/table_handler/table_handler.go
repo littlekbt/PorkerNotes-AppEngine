@@ -1,12 +1,16 @@
 package table_handler
 
 import (
-  "net/http"
-  "encoding/json"
+	"encoding/json"
+	"net/http"
 
-  "models/response"
+	//"github.com/littlekbt/PorkerNotes-AppEngine/models/response"
+	"github.com/littlekbt/PorkerNotes-AppEngine/models/table"
 )
 
 func Handle(w http.ResponseWriter, r *http.Request) {
-  json.NewEncoder(w).Encode(response.Response{Status: "ok", Message: "Hello world."})
+	tables := make([]table.Table, 1)
+	tables[0] = table.Table{ID: int64(1)}
+	json.NewEncoder(w).Encode(tables)
+	//json.NewEncoder(w).Encode(response.Response{Status: "ok", Message: "Hello world."})
 }
