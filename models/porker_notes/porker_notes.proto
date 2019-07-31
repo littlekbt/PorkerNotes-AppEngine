@@ -1,0 +1,51 @@
+syntax = "proto3";
+package porker_notes;
+
+// import "google/protobuf/timestamp.proto";
+
+message Table {
+  enum Type {
+    unknown = 0;
+    ring = 1;
+    tournament = 2;
+  }
+  string name = 1;
+  string memo = 2;
+  Type type = 3;
+  repeated Hand hands = 4;
+}
+
+message Hand {
+  int32 table_id = 1;
+  string name = 2;
+  int32 pos = 3;
+  float tip = 4;
+  repeated Card boards = 5;
+  repeated Card hands = 6;
+  repeated Action actions = 7;
+}
+
+message Card {
+  enum Number {
+    NUMBER_UNKNOWN = 0;
+    ONE = 1;
+    TWO = 2;
+  }
+
+  enum Suit {
+    SUIT_UNKNOWN = 0;
+    HEART = 1;
+    DIAMOND = 2;
+    SPADE = 3;
+    CLUB = 4;
+  }
+
+  Number num = 1;
+  Suit suit = 2;
+}
+
+message Action {
+  string person = 1;
+  string act = 2;
+  int32 tip = 3;
+}
