@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/littlekbt/PorkerNotes-AppEngine/handlers/hand_handler"
 	"github.com/littlekbt/PorkerNotes-AppEngine/handlers/table_handler"
 	"github.com/littlekbt/PorkerNotes-AppEngine/models/response"
 	"google.golang.org/appengine"
@@ -12,6 +13,7 @@ import (
 func main() {
 	http.HandleFunc("/", handle)
 	http.HandleFunc("/tables", table_handler.Handle)
+	http.HandleFunc("/hands", hand_handler.Handle)
 	appengine.Main()
 }
 
