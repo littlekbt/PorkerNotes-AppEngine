@@ -1,0 +1,30 @@
+{
+  "table_id": 1,
+  "name": "test_hand",
+  "pos": 1,
+  "tip": 1,
+  "hands": [
+    {
+      "suit": 1,
+      "number": 10
+    },
+    {
+      "suit": 2,
+       "number": 5
+    }
+  ],
+  "boards": [
+    {
+      "suit": 3,
+      "number": 10
+    },
+    {
+      "suit": 4,
+      "number": 1
+    },
+    {
+      "suit": 1,
+      "number": 2
+    }
+  ]
+}

@@ -3,14 +3,14 @@ version: '3'
 services:
   mysql:
     image: mysql:5.6
-    container_name: monoceros_mysql
+    container_name: porker_note__mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
     volumes:
       - ./docker_etc/mysql_5.6/:/etc/mysql/
       - mysql-data:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 3307:3306
 volumes:
   mysql-data:
     driver: local
