@@ -30,7 +30,6 @@ const (
   CLUB
 )
 
-
 type Card struct {
   Suit porker_notes.Card_Suit `json:"suit"`
   Number porker_notes.Card_Number `json:"number"`

@@ -56,7 +56,22 @@ message Card {
 }
 
 message Action {
-  string person = 1;
-  string act = 2;
-  int32 tip = 3;
+  message PreFlop {
+    enum Event {
+      CALL = 0;
+      FOLD = 1;
+      RAISE = 2;
+    }
+  }
+  message Bet {
+    enum Event {
+      CHECK = 0;
+      FOLD = 1;
+      BET = 2;
+    }
+  }
+  enum Type {
+    PRE_FLOP = 0;
+    BET = 1;
+  }
 }

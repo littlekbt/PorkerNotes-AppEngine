@@ -1,6 +1,7 @@
 package hand
 
 import (
+  // "log"
   "time"
   "strconv"
   "database/sql"
@@ -16,7 +17,10 @@ type Hand struct {
   TableID int64 `json:"table_id" db:"table_id"`
   Name string `json:"name" db:"name"`
   Pos int64 `json:"pos" db:"pos"`
-  Tip int64 `json:"tip" db:"tip"`
+  BlindL int64 `json:"blind_l" db:"blind_l"`
+  BlindR int64 `json:"blind_r" db:"blind_r"`
+  Ante int64 `json:"ante" db:"ante"`
+  PreFlop []action.Action `json:"pre_flop"`
   Hands []card.Card `json:"hands"`
   Boards []card.Card `json:"boards"`
   Hand1 int `db:"hand1"`
@@ -24,9 +28,39 @@ type Hand struct {
   Board1 int `db:"board1"`
   Board2 int `db:"board2"`
   Board3 int `db:"board3"`
+  Board4 int `db:"board4"`
+  Board5 int `db:"board5"`
   Actions []action.Action `json:"actions"`
   CreatedAt time.Time `json:"created_at" db:"created_at"`
   UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+}
+
+func (h *Hand)NewCards() {
+  for i, c := range h.Hands {
+    b := c.MkBinary()
+    switch i {
+    case 0:
+      h.Hand1 = b
+    case 1:
+      h.Hand2 = b
+    }
+  }
+
+  for i, c := range h.Boards {
+    b := c.MkBinary()
+    switch i {
+    case 0:
+      h.Board1 = b
+    case 1:
+      h.Board2 = b
+    case 2:
+      h.Board3 = b
+    case 3:
+      h.Board4 = b
+    case 4:
+      h.Board5 = b
+    }
+  }
 }
 
 
@@ -55,26 +89,43 @@ func Select(offset int) ([]Hand, error) {
 }
 
 func (h Hand) Insert() (Hand, error){
+  h.CreatedAt = time.Now()
+  h.UpdatedAt = time.Now()
   db, err := sql.Open("mysql", "root@tcp(127.0.0.1:3307)/porker_notes?parseTime=true&loc=Asia%2FTokyo")
   defer db.Close()
 	if err != nil {
-		return h, err
+		return Hand{}, err
 	}
 
   // TODO: Transaction
-	ins, err := db.Prepare("INSERT INTO hands(table_id, name, pos, tip, hand1, hand2, board1, board2, board3, created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	ins, err := db.Prepare("INSERT INTO hands(table_id, name, pos, blind_l, blind_r, ante, hand1, hand2, board1, board2, board3, board4, board5, created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
-		return h, err
+		return Hand{}, err
 	}
-  ins.Exec(h.TableID, h.Name, h.Pos, h.Tip, h.Hand1, h.Hand2, h.Board1, h.Board2, h.Board3, h.CreatedAt, h.UpdatedAt)
-  
+  r, err := ins.Exec(h.TableID, h.Name, h.Pos, h.BlindL, h.BlindR, h.Ante, h.Hand1, h.Hand2, h.Board1, h.Board2, h.Board3, h.Board4, h.Board5, h.CreatedAt, h.UpdatedAt) 
+  if err != nil {
+		return Hand{}, err
+  }
+  id, _ := r.LastInsertId()
+  h.ID = id
 
-  for _, action := range h.Actions {
-    ins, err = db.Prepare("INSERT INTO actions(hand_id, created_at, updated_at) VALUES(?, ?, ?)")
+  for i, pf := range h.PreFlop {
+    pf.HandID = id
+    pf.Type = action.PRE_FLOP
+    p, err := pf.Insert()
     if err != nil {
-		  return h, err
-	  }
-    ins.Exec(action.HandID, h.CreatedAt, h.UpdatedAt)
+      return Hand{}, err
+    }
+    h.PreFlop[i] = p
+  }
+  for i, act := range h.Actions {
+    act.HandID = id
+    act.Type = action.BET_ROUND
+    a, err := act.Insert()
+    if err != nil {
+      return Hand{}, err
+    }
+    h.Actions[i] = a
   }
 	return h, nil
 }

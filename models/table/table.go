@@ -46,14 +46,19 @@ func (t Table) Insert() (Table, error){
   db, err := sql.Open("mysql", "root@tcp(127.0.0.1:3307)/porker_notes?parseTime=true&loc=Asia%2FTokyo")
   defer db.Close()
 	if err != nil {
-		return t, err
+		return Table{}, err
 	}
 
 	ins, err := db.Prepare("INSERT INTO tables(name, type, memo, created_at, updated_at) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
-		return t, err
+		return Table{}, err
 	}
-	ins.Exec(t.Name, t.Type, t.Memo, t.CreatedAt, t.UpdatedAt)
+  r, err := ins.Exec(t.Name, t.Type, t.Memo, t.CreatedAt, t.UpdatedAt)
+  if err != nil {
+		return Table{}, err
+  }
+  id, _ := r.LastInsertId()
+  t.ID = id
 	return t, nil
 }
 

@@ -1,0 +1,67 @@
+{
+  "table_id": 1,
+  "name": "test",
+  "pos": 1,
+  "blind_l": 200,
+  "blind_r": 100,
+  "ante": 50,
+  "pre_flop": [
+    {
+      "person": "me",
+      "event": 4,
+      "bet": 100
+    },
+    {
+      "person": "me",
+      "event": 1,
+      "bet": 100
+    }
+  ],
+  "hands": [
+    {
+      "suit": 1,
+      "number": 1
+    },
+    {
+      "suit": 2,
+      "number": 10
+    }
+  ],
+  "boards": [
+    {
+      "suit": 3,
+      "number": 10
+    },
+    {
+      "suit": 4,
+      "number": 5
+    },
+    {
+      "suit": 2,
+      "number": 1
+    },
+    {
+      "suit": 3,
+      "number": 13
+    },
+    {
+      "suit": 1,
+      "number": 5
+    }
+  ],
+  "actions": [
+    {
+      "person": "me",
+      "event": 5,
+      "bet": 100
+    },
+    {
+      "person": "me",
+      "event": 2
+    },
+    {
+      "person": "me",
+      "event": 3
+    }
+  ]
+}

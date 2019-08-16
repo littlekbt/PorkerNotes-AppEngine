@@ -12,6 +12,11 @@ import (
 )
 
 func Handle(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  w.Header().Set("Access-Control-Allow-Origin", "*")
+  w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+  w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
+
 	switch r.Method {
   case "GET":
     tables, err := table.Select(0)
@@ -19,7 +24,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
       log.Fatal(err)
     }
     json.NewEncoder(w).Encode(tables)
-	case "POST":
+  case "POST":
 		body := r.Body
 		defer body.Close()
 
@@ -37,6 +42,8 @@ func Handle(w http.ResponseWriter, r *http.Request) {
     if err != nil {
       log.Fatal(err)
     }
-	  json.NewEncoder(w).Encode(it)
+    json.NewEncoder(w).Encode(it)
+  case "OPTIONS":
+    json.NewEncoder(w).Encode(table.Table{})
 	}
 }
